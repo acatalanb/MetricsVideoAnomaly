@@ -17,7 +17,8 @@ def run_training(model_name, epochs=5, dataset_path=None, dataset_name=None):
     if dataset_name is None:
         dataset_name = DEFAULT_DATASET_NAME
 
-    metrics_manager = MetricsManager(model_name)
+    eval_model_name = f"{model_name.replace(' ', '_')}_eval_{dataset_name}"
+    metrics_manager = MetricsManager(eval_model_name)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     num_gpus = torch.cuda.device_count()
     if num_gpus > 1:

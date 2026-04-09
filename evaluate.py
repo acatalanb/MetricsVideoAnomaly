@@ -9,7 +9,7 @@ import numpy as np
 from config import DEFAULT_DATASET_ROOT, DEFAULT_DATASET_NAME, BATCH_SIZE
 
 
-def run_evaluation(model_name, model_path, dataset_path=None, dataset_name=None):
+def run_evaluation(model_name, model_path, dataset_path=None, dataset_name=None, epochs=None):
     if dataset_path is None:
         dataset_path = DEFAULT_DATASET_ROOT
     if dataset_name is None:
@@ -43,6 +43,8 @@ def run_evaluation(model_name, model_path, dataset_path=None, dataset_name=None)
             all_labels.extend(labels.cpu().numpy())
 
     stats = metrics_manager.compute_metrics(all_labels, all_preds, all_probs)
+    if epochs is not None:
+        stats['epochs'] = epochs
     metrics_manager.save_metrics(stats, 0)  # no training time
     metrics_manager.plot_confusion_matrix(np.array(stats['confusion_matrix']))
     metrics_manager.plot_roc_curve(stats['roc_data']['fpr'], stats['roc_data']['tpr'], stats['auc'])
@@ -57,6 +59,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_path', type=str, required=True)
     parser.add_argument('--dataset_path', type=str, default=None)
     parser.add_argument('--dataset_name', type=str, default=None)
+    parser.add_argument('--epochs', type=int, default=None, help='Number of training epochs (optional, for metrics)')
 
     args = parser.parse_args()
-    run_evaluation(args.model, args.model_path, args.dataset_path, args.dataset_name)
+    run_evaluation(args.model, args.model_path, args.dataset_path, args.dataset_name, args.epochs)

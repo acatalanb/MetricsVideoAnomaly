@@ -20,7 +20,11 @@ cnn_lstm_metrics = load_metrics_for_comparison("CNN-LSTM_eval_kvasir")
 cnn3d_metrics = load_metrics_for_comparison("3D CNN_eval_kvasir")
 video_transformer_metrics = load_metrics_for_comparison("Video Transformer_eval_kvasir")
 
-common_epochs = cnn_lstm_metrics.get('epochs', 5) if cnn_lstm_metrics else 5
+def get_max_epochs(metrics_list):
+    epochs = [m.get('epochs', 0) for m in metrics_list if m]
+    return max(epochs) if epochs else 5
+
+common_epochs = get_max_epochs([cnn_lstm_metrics, cnn3d_metrics, video_transformer_metrics])
 
 # ROC Curves
 fig, axes = plt.subplots(2, 2, figsize=(18, 10))
@@ -38,13 +42,14 @@ for i, (metrics, name, color) in enumerate(models_data):
         fpr = np.array(metrics['roc_data']['fpr'])
         tpr = np.array(metrics['roc_data']['tpr'])
         auc = metrics['auc']
+        epochs = metrics.get('epochs', 'N/A')
         axes[i].plot(fpr, tpr, color=color, lw=2)
         axes[i].plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
         axes[i].set_xlim([0.0, 1.0])
         axes[i].set_ylim([0.0, 1.05])
         axes[i].set_xlabel('False Positive Rate')
         axes[i].set_ylabel('True Positive Rate')
-        axes[i].set_title(f'{name} (AUC = {auc:.2f})')
+        axes[i].set_title(f'{name} (AUC = {auc:.2f}, Epochs = {epochs})')
         axes[i].grid(True)
     else:
         print(f"{name} ROC data not found.")
