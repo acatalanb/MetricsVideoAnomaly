@@ -1,5 +1,5 @@
 @echo off
-set DATASET_NAME=kvasir
+set DATASET_NAME=crime-ucf
 set EPOCHS=20
 
 echo 🚀 Starting Training and Evaluation for all models on %DATASET_NAME% dataset...
@@ -42,6 +42,6 @@ if %ERRORLEVEL% NEQ 0 (
 
 echo --------------------------------------------------
 echo 📊 Generating Comparison Results...
-python compare_models.py
+python compare_models.py --dataset_name %DATASET_NAME%
 echo ✅ All tasks complete!
 pause
