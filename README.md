@@ -1,2 +1,3 @@
 # MetricsVideoAnomaly
-Non-GUI anomaly detection of videos
+Anomaly detection of videos </br>
+To execute: ./run_all_models.bat
